@@ -27,7 +27,7 @@ export default function ReservationsScreen() {
   // Generate days of May (31 days)
   const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
   const weekdays = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'];
-  
+
   // Simulated starting day of the week for May 2026 (May 1, 2026 was a Friday, which is index 5)
   const startDayOffset = 5;
 
@@ -73,7 +73,7 @@ export default function ReservationsScreen() {
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          
+
           {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>Reservaciones 🍷</Text>
@@ -89,7 +89,7 @@ export default function ReservationsScreen() {
                   <Text key={index} style={styles.weekdayText}>{day}</Text>
                 ))}
               </View>
-              
+
               <View style={styles.calendarGrid}>
                 {/* Empty slots for starting offset */}
                 {Array.from({ length: startDayOffset }).map((_, index) => (
@@ -100,7 +100,7 @@ export default function ReservationsScreen() {
                 {daysInMonth.map((day) => {
                   const isSelected = selectedDay === day;
                   const isPast = day < 17; // Today is simulated as 17th of May
-                  
+
                   return (
                     <TouchableOpacity
                       key={day}
@@ -175,9 +175,9 @@ export default function ReservationsScreen() {
             <View style={styles.guestSelectorCard}>
               <View style={styles.guestIconBox}>
                 <Ionicons name="people-outline" size={24} color={COLORS.primary} />
-                <Text style={styles.guestCurrentText}>{guestsCount} personas</Text>
+                <Text style={styles.guestCurrentText}>{`${guestsCount} personas`}</Text>
               </View>
-              
+
               <View style={styles.qtyContainer}>
                 <TouchableOpacity
                   style={styles.qtyBtn}
@@ -204,7 +204,7 @@ export default function ReservationsScreen() {
           {/* Client Details Form */}
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>4. Datos de la Reservación</Text>
-            
+
             <View style={styles.formCard}>
               <Text style={styles.inputLabel}>Nombre Completo *</Text>
               <View style={styles.inputContainer}>

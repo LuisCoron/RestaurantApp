@@ -61,7 +61,7 @@ export default function HistoryDetailScreen({ route, navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
-      
+
       {/* Header with back button */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -71,11 +71,11 @@ export default function HistoryDetailScreen({ route, navigation }) {
           <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Detalle del Pedido</Text>
-        <View style={{ width: 40 }} /> {/* Spacer */}
+        <View style={{ width: 40 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        
+
         {/* Order Summary Header */}
         <View style={styles.orderHeaderCard}>
           <View style={styles.cardHeaderRow}>
@@ -105,13 +105,13 @@ export default function HistoryDetailScreen({ route, navigation }) {
             <View key={index}>
               <View style={styles.itemRow}>
                 <View style={styles.itemQuantityBox}>
-                  <Text style={styles.itemQuantityText}>{item.qty || 1}x</Text>
+                  <Text style={styles.itemQuantityText}>{`${item.qty || 1}x`}</Text>
                 </View>
                 <View style={styles.itemNameBox}>
                   <Text style={styles.itemName}>{item.name}</Text>
-                  <Text style={styles.itemPriceUnit}>Precio unitario: ${item.price.toFixed(2)}</Text>
+                  <Text style={styles.itemPriceUnit}>{`Precio unitario: $${item.price.toFixed(2)}`}</Text>
                 </View>
-                <Text style={styles.itemTotal}>${((item.price) * (item.qty || 1)).toFixed(2)}</Text>
+                <Text style={styles.itemTotal}>{`$${((item.price) * (item.qty || 1)).toFixed(2)}`}</Text>
               </View>
               {index < order.items.filter(item => item.price > 0).length - 1 && (
                 <View style={styles.itemDivider} />
@@ -125,22 +125,22 @@ export default function HistoryDetailScreen({ route, navigation }) {
         <View style={styles.receiptCard}>
           <View style={styles.receiptRow}>
             <Text style={styles.receiptLabel}>Subtotal</Text>
-            <Text style={styles.receiptValue}>${subtotal.toFixed(2)}</Text>
+            <Text style={styles.receiptValue}>{`$${subtotal.toFixed(2)}`}</Text>
           </View>
           <View style={styles.receiptRow}>
             <Text style={styles.receiptLabel}>Tarifa de Envío / Servicio</Text>
-            <Text style={styles.receiptValue}>$45.00</Text>
+            <Text style={styles.receiptValue}>{`$45.00`}</Text>
           </View>
           {discountVal > 0 && (
             <View style={styles.receiptRow}>
               <Text style={[styles.receiptLabel, { color: COLORS.success }]}>Descuento Cupón</Text>
-              <Text style={[styles.receiptValue, { color: COLORS.success }]}>-${discountVal.toFixed(2)}</Text>
+              <Text style={[styles.receiptValue, { color: COLORS.success }]}>{`-$${discountVal.toFixed(2)}`}</Text>
             </View>
           )}
           <View style={styles.receiptDivider} />
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Total Pagado</Text>
-            <Text style={styles.totalValue}>${order.total.toFixed(2)}</Text>
+            <Text style={styles.totalValue}>{`$${order.total.toFixed(2)}`}</Text>
           </View>
         </View>
 

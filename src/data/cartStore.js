@@ -1,7 +1,7 @@
 import { MOCK_CART, ORDER_HISTORY } from './mockData';
 
 // --- SHOPPING CART STATE ---
-let cart = [...MOCK_CART];
+let cart = [];
 let cartListeners = [];
 
 const notifyCart = () => {

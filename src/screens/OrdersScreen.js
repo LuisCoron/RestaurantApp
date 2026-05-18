@@ -63,7 +63,7 @@ export default function OrdersScreen({ navigation }) {
       qty: item.qty,
       price: item.price,
     }));
-    
+
     // Add discount item if present
     if (discountVal > 0) {
       finalItems.push({
@@ -132,8 +132,8 @@ export default function OrdersScreen({ navigation }) {
           </View>
           <Text style={styles.cartItemDesc} numberOfLines={1}>{item.description}</Text>
           <View style={styles.cartItemFooter}>
-            <Text style={styles.cartItemPrice}>${(item.price * item.qty).toFixed(2)}</Text>
-            
+            <Text style={styles.cartItemPrice}>{`$${(item.price * item.qty).toFixed(2)}`}</Text>
+
             {/* Quantity Selector */}
             <View style={styles.qtyContainer}>
               <TouchableOpacity
@@ -164,7 +164,7 @@ export default function OrdersScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
-      
+
       {/* Title */}
       <View style={styles.header}>
         <Text style={styles.title}>Mi Carrito 🛒</Text>
@@ -186,7 +186,7 @@ export default function OrdersScreen({ navigation }) {
           <View style={styles.summaryCard}>
             <View style={styles.couponRow}>
               <Ionicons name="pricetag-outline" size={18} color={COLORS.primary} style={{ marginRight: 6 }} />
-              <Text style={styles.couponText}>Cupón aplicado: <Text style={styles.couponCode}>{discountCode}</Text></Text>
+              <Text style={styles.couponText}>{`Cupón aplicado: `}<Text style={styles.couponCode}>{discountCode}</Text></Text>
               <TouchableOpacity onPress={() => setDiscountCode(discountCode ? '' : 'WELCOME50')}>
                 <Text style={styles.couponAction}>{discountCode ? 'Quitar' : 'Aplicar'}</Text>
               </TouchableOpacity>
@@ -196,20 +196,20 @@ export default function OrdersScreen({ navigation }) {
 
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Subtotal</Text>
-              <Text style={styles.summaryValue}>${subtotal.toFixed(2)}</Text>
+              <Text style={styles.summaryValue}>{`$${subtotal.toFixed(2)}`}</Text>
             </View>
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Impuestos (IVA 16%)</Text>
-              <Text style={styles.summaryValue}>${taxes.toFixed(2)}</Text>
+              <Text style={styles.summaryValue}>{`$${taxes.toFixed(2)}`}</Text>
             </View>
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Tarifa de Envío</Text>
-              <Text style={styles.summaryValue}>${deliveryFee.toFixed(2)}</Text>
+              <Text style={styles.summaryValue}>{`$${deliveryFee.toFixed(2)}`}</Text>
             </View>
             {discountVal > 0 && (
               <View style={styles.summaryRow}>
                 <Text style={[styles.summaryLabel, { color: COLORS.success }]}>Descuento Cupón</Text>
-                <Text style={[styles.summaryValue, { color: COLORS.success }]}>-${discountVal.toFixed(2)}</Text>
+                <Text style={[styles.summaryValue, { color: COLORS.success }]}>{`-$${discountVal.toFixed(2)}`}</Text>
               </View>
             )}
 
@@ -217,7 +217,7 @@ export default function OrdersScreen({ navigation }) {
 
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Total a Pagar</Text>
-              <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
+              <Text style={styles.totalValue}>{`$${total.toFixed(2)}`}</Text>
             </View>
 
             {/* Confirm button */}

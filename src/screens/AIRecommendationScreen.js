@@ -173,7 +173,7 @@ export default function AIRecommendationScreen({ navigation }) {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        
+
         {/* PROGRESS STEPPER */}
         {renderStepIndicators()}
 
@@ -182,7 +182,7 @@ export default function AIRecommendationScreen({ navigation }) {
           <View style={styles.cardQuestion}>
             <Text style={styles.questionTitle}>¿Qué se te antoja hoy?</Text>
             <Text style={styles.questionSubtitle}>Tu antojo principal guiará nuestra recomendación</Text>
-            
+
             <View style={styles.optionsList}>
               {AI_QUESTIONNAIRE.cravings.map((opt) => (
                 <TouchableOpacity
@@ -204,7 +204,7 @@ export default function AIRecommendationScreen({ navigation }) {
           <View style={styles.cardQuestion}>
             <Text style={styles.questionTitle}>¿Cuál es tu presupuesto estimado?</Text>
             <Text style={styles.questionSubtitle}>Buscamos adaptarnos perfectamente a ti</Text>
-            
+
             <View style={styles.optionsList}>
               {AI_QUESTIONNAIRE.budget.map((opt) => (
                 <TouchableOpacity
@@ -226,7 +226,7 @@ export default function AIRecommendationScreen({ navigation }) {
           <View style={styles.cardQuestion}>
             <Text style={styles.questionTitle}>¿Qué tipo de comida prefieres?</Text>
             <Text style={styles.questionSubtitle}>El estilo de cocina que deseas experimentar</Text>
-            
+
             <View style={styles.optionsList}>
               {AI_QUESTIONNAIRE.foodType.map((opt) => (
                 <TouchableOpacity
@@ -258,17 +258,17 @@ export default function AIRecommendationScreen({ navigation }) {
         {currentStep === 4 && recommendedDish && (
           <View style={styles.resultContainer}>
             <Text style={styles.resultTitleHeader}>¡Recomendación Lista! 🎉</Text>
-            
+
             {/* The recommendation card */}
             <View style={styles.recommendationCard}>
-              
+
               <View style={styles.resultEmojiBg}>
                 <Text style={styles.resultEmoji}>{recommendedDish.emoji}</Text>
               </View>
 
               <View style={styles.resultInfo}>
                 <Text style={styles.resultName}>{recommendedDish.name}</Text>
-                <Text style={styles.resultPrice}>${recommendedDish.price.toFixed(2)}</Text>
+                <Text style={styles.resultPrice}>{`$${recommendedDish.price.toFixed(2)}`}</Text>
                 <Text style={styles.resultDesc}>{recommendedDish.description}</Text>
               </View>
 

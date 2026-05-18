@@ -12,8 +12,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../theme/colors';
 import { historyStore } from '../data/cartStore';
 
+const DATE_FILTERS = [
+  { id: 'todos', name: 'Todos', emoji: '📜' },
+  { id: 'hoy', name: 'Hoy', emoji: '📅' },
+  { id: 'semana', name: 'Esta Semana', emoji: '🗓️' },
+  { id: 'mes', name: 'Este Mes', emoji: '⏳' },
+];
+
 export default function HistoryScreen({ navigation }) {
   const [history, setHistory] = useState(historyStore.getHistory());
+  const [selectedFilter, setSelectedFilter] = useState('todos');
 
   // Subscribe to historyStore updates
   useEffect(() => {
@@ -25,9 +33,89 @@ export default function HistoryScreen({ navigation }) {
     return unsubscribe;
   }, []);
 
+  // Matching logic for both historical mock data and real-time generated timestamps
+  const matchesDateFilter = (item) => {
+    if (selectedFilter === 'todos') return true;
+
+    const dateStr = item.date.toLowerCase();
+
+    // 1. "Hoy" filter
+    if (selectedFilter === 'hoy') {
+      return dateStr.includes('hoy') || dateStr.includes('17 de mayo');
+    }
+
+    // 2. "Esta Semana" filter (corresponds to Mayo 11 to Mayo 17, 2026)
+    if (selectedFilter === 'semana') {
+      if (dateStr.includes('hoy') || dateStr.includes('ayer')) return true;
+
+      // Extract day from dates like "15 de Mayo"
+      const dayMatch = dateStr.match(/(\d+)\s+de\s+mayo/);
+      if (dayMatch) {
+        const day = parseInt(dayMatch[1], 10);
+        return day >= 11 && day <= 17;
+      }
+      return false;
+    }
+
+    // 3. "Este Mes" filter (corresponds to Mayo/May)
+    if (selectedFilter === 'mes') {
+      return dateStr.includes('mayo') || dateStr.includes('hoy') || dateStr.includes('ayer');
+    }
+
+    return true;
+  };
+
+  // Helper to dynamically calculate quantities inside each date chip
+  const getFilterCount = (filterId) => {
+    return history.filter((item) => {
+      const dateStr = item.date.toLowerCase();
+      if (filterId === 'todos') return true;
+      if (filterId === 'hoy') return dateStr.includes('hoy') || dateStr.includes('17 de mayo');
+      if (filterId === 'semana') {
+        if (dateStr.includes('hoy') || dateStr.includes('ayer')) return true;
+        const dayMatch = dateStr.match(/(\d+)\s+de\s+mayo/);
+        if (dayMatch) {
+          const day = parseInt(dayMatch[1], 10);
+          return day >= 11 && day <= 17;
+        }
+        return false;
+      }
+      if (filterId === 'mes') return dateStr.includes('mayo') || dateStr.includes('hoy') || dateStr.includes('ayer');
+      return true;
+    }).length;
+  };
+
+  const filteredHistory = history.filter(matchesDateFilter);
+
+  const renderFilterChip = ({ item }) => {
+    const isSelected = selectedFilter === item.id;
+    const count = getFilterCount(item.id);
+
+    return (
+      <TouchableOpacity
+        style={[
+          styles.chip,
+          isSelected && styles.chipSelected
+        ]}
+        onPress={() => setSelectedFilter(item.id)}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.chipEmoji}>{item.emoji}</Text>
+        <Text
+          style={[
+            styles.chipText,
+            isSelected && styles.chipTextSelected
+          ]}
+        >
+          {`${item.name} (${count})`}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
   const renderHistoryItem = ({ item }) => {
-    const itemCount = item.items.reduce((sum, i) => sum + (i.qty || 1), 0);
-    
+    const itemCount = item.items.filter(i => i.price > 0).reduce((sum, i) => sum + (i.qty || 1), 0);
+
     return (
       <TouchableOpacity
         style={styles.historyCard}
@@ -51,14 +139,14 @@ export default function HistoryScreen({ navigation }) {
         <View style={styles.cardFooter}>
           <View>
             <Text style={styles.itemCountText}>
-              {itemCount} {itemCount === 1 ? 'platillo' : 'platillos'}
+              {`${itemCount} ${itemCount === 1 ? 'platillo' : 'platillos'}`}
             </Text>
             <Text style={styles.itemsSummary} numberOfLines={1}>
-              {item.items.map(i => i.name).join(', ')}
+              {item.items.filter(i => i.price > 0).map(i => i.name).join(', ')}
             </Text>
           </View>
           <View style={styles.priceContainer}>
-            <Text style={styles.totalPrice}>${item.total.toFixed(2)}</Text>
+            <Text style={styles.totalPrice}>{`$${item.total.toFixed(2)}`}</Text>
             <Ionicons name="chevron-forward" size={18} color={COLORS.primary} style={{ marginLeft: 4 }} />
           </View>
         </View>
@@ -69,23 +157,36 @@ export default function HistoryScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
-      
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Historial de Pedidos 📜</Text>
         <Text style={styles.subtitle}>Tus visitas y ordenes anteriores</Text>
       </View>
 
+      {/* Sleek Date Filter Chips */}
+      <View style={styles.filterContainer}>
+        <FlatList
+          data={DATE_FILTERS}
+          renderItem={renderFilterChip}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterList}
+        />
+      </View>
+
+      {/* Dynamic List */}
       <FlatList
-        data={history}
+        data={filteredHistory}
         renderItem={renderHistoryItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="time-outline" size={48} color={COLORS.textSecondary} />
-            <Text style={styles.emptyText}>Aún no tienes pedidos registrados.</Text>
+            <Ionicons name="calendar-outline" size={48} color={COLORS.textSecondary} />
+            <Text style={styles.emptyText}>No tienes pedidos registrados en este período.</Text>
           </View>
         }
       />
@@ -112,6 +213,41 @@ const styles = StyleSheet.create({
     fontSize: SIZES.font,
     color: COLORS.textSecondary,
     marginTop: 2,
+  },
+  filterContainer: {
+    marginVertical: SIZES.base,
+  },
+  filterList: {
+    paddingHorizontal: SIZES.medium,
+    paddingBottom: SIZES.base,
+  },
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    borderRadius: 20,
+    paddingHorizontal: SIZES.medium,
+    paddingVertical: SIZES.base,
+    marginRight: SIZES.base,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  chipSelected: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  chipEmoji: {
+    fontSize: SIZES.medium,
+    marginRight: 6,
+  },
+  chipText: {
+    fontSize: SIZES.font,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
+  },
+  chipTextSelected: {
+    color: COLORS.background,
+    fontWeight: 'bold',
   },
   listContent: {
     paddingHorizontal: SIZES.medium,
@@ -158,7 +294,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.small + 1,
     color: COLORS.textSecondary,
     marginBottom: SIZES.base,
-    marginLeft: 24, // Align with orderId (after receipt icon)
+    marginLeft: 24,
   },
   divider: {
     height: 1,
@@ -199,5 +335,8 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     marginTop: SIZES.medium,
     fontSize: SIZES.font,
+    textAlign: 'center',
+    paddingHorizontal: 40,
+    lineHeight: 20,
   },
 });

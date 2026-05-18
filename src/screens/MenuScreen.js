@@ -179,7 +179,7 @@ export default function MenuScreen({ route }) {
   const [products] = useState(INITIAL_PRODUCTS);
   const [selectedCategory, setSelectedCategory] = useState('todas');
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // Detail Modal state
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [detailQty, setDetailQty] = useState(1);
@@ -270,7 +270,7 @@ export default function MenuScreen({ route }) {
         <View style={styles.itemDetails}>
           <View style={styles.itemHeader}>
             <Text style={styles.itemName} numberOfLines={1}>{item.name}</Text>
-            <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+            <Text style={styles.itemPrice}>{`$${item.price.toFixed(2)}`}</Text>
           </View>
           <Text style={styles.itemDesc} numberOfLines={2}>
             {item.description}
@@ -308,7 +308,7 @@ export default function MenuScreen({ route }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
-      
+
       {/* Title Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Nuestro Menú 🍽️</Text>
@@ -371,17 +371,17 @@ export default function MenuScreen({ route }) {
           onRequestClose={() => setSelectedProduct(null)}
         >
           <View style={styles.modalOverlay}>
-            <TouchableOpacity 
-              style={styles.modalBgDismiss} 
-              activeOpacity={1} 
-              onPress={() => setSelectedProduct(null)} 
+            <TouchableOpacity
+              style={styles.modalBgDismiss}
+              activeOpacity={1}
+              onPress={() => setSelectedProduct(null)}
             />
             <View style={styles.modalContent}>
-              
+
               {/* Header Image */}
               <View style={styles.modalImageWrapper}>
                 <Image source={{ uri: selectedProduct.image }} style={styles.modalHeaderImage} />
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.modalCloseBtn}
                   onPress={() => setSelectedProduct(null)}
                 >
@@ -392,10 +392,10 @@ export default function MenuScreen({ route }) {
               {/* Modal Body Info */}
               <ScrollView style={styles.modalScrollView} showsVerticalScrollIndicator={false}>
                 <View style={styles.modalBody}>
-                  
+
                   <View style={styles.modalTitleRow}>
                     <Text style={styles.modalTitle}>{selectedProduct.name}</Text>
-                    <Text style={styles.modalPrice}>${selectedProduct.price.toFixed(2)}</Text>
+                    <Text style={styles.modalPrice}>{`$${selectedProduct.price.toFixed(2)}`}</Text>
                   </View>
 
                   <View style={styles.modalMetaRow}>
@@ -404,10 +404,10 @@ export default function MenuScreen({ route }) {
                         {CATEGORIES.find(c => c.id === selectedProduct.category)?.name}
                       </Text>
                     </View>
-                    
+
                     <View style={styles.availStatusRow}>
                       <View style={[
-                        styles.availDot, 
+                        styles.availDot,
                         { backgroundColor: selectedProduct.available ? COLORS.success : COLORS.error }
                       ]} />
                       <Text style={[
@@ -429,17 +429,17 @@ export default function MenuScreen({ route }) {
                       <View style={styles.qtyPickerWrapper}>
                         <Text style={styles.qtyPickerLabel}>Cantidad</Text>
                         <View style={styles.qtyPickerControls}>
-                          <TouchableOpacity 
+                          <TouchableOpacity
                             style={[styles.qtyPickerBtn, detailQty <= 1 && styles.qtyPickerBtnDisabled]}
                             onPress={() => setDetailQty(Math.max(1, detailQty - 1))}
                             disabled={detailQty <= 1}
                           >
                             <Ionicons name="remove" size={20} color={detailQty <= 1 ? COLORS.border : COLORS.text} />
                           </TouchableOpacity>
-                          
+
                           <Text style={styles.qtyPickerText}>{detailQty}</Text>
-                          
-                          <TouchableOpacity 
+
+                          <TouchableOpacity
                             style={styles.qtyPickerBtn}
                             onPress={() => setDetailQty(detailQty + 1)}
                           >
@@ -448,14 +448,14 @@ export default function MenuScreen({ route }) {
                         </View>
                       </View>
 
-                      <TouchableOpacity 
+                      <TouchableOpacity
                         style={styles.modalAddBtn}
                         onPress={handleAddFromModal}
                         activeOpacity={0.9}
                       >
                         <Ionicons name="cart" size={22} color={COLORS.background} style={{ marginRight: 8 }} />
                         <Text style={styles.modalAddBtnText}>
-                          Agregar al pedido • ${(selectedProduct.price * detailQty).toFixed(2)}
+                          {`Agregar al pedido • $${(selectedProduct.price * detailQty).toFixed(2)}`}
                         </Text>
                       </TouchableOpacity>
                     </View>

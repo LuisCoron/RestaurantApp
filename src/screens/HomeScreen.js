@@ -24,7 +24,7 @@ export default function HomeScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        
+
         {/* Header Section */}
         <View style={styles.header}>
           <View>
@@ -126,11 +126,11 @@ export default function HomeScreen({ navigation }) {
               <Text style={styles.orderDate}>{activeOrder.date}</Text>
               <View style={styles.orderDivider} />
               <Text style={styles.orderItemsList} numberOfLines={1}>
-                {activeOrder.items.map(item => `${item.qty}x ${item.name}`).join(', ')}
+                {`${activeOrder.items.filter(item => item.price > 0).map(item => `${item.qty}x ${item.name}`).join(', ')}`}
               </Text>
               <View style={styles.orderFooter}>
                 <Text style={styles.orderTotalText}>Total estimado:</Text>
-                <Text style={styles.orderTotalPrice}>${activeOrder.total.toFixed(2)}</Text>
+                <Text style={styles.orderTotalPrice}>{`$${activeOrder.total.toFixed(2)}`}</Text>
               </View>
             </View>
           </View>
@@ -153,7 +153,7 @@ export default function HomeScreen({ navigation }) {
                 <View style={styles.resTextBox}>
                   <Text style={styles.resDate}>{nextReservation.date}</Text>
                   <Text style={styles.resDetails}>
-                    Hora: {nextReservation.time} • Para {nextReservation.guests} personas
+                    {`Hora: ${nextReservation.time} • Para ${nextReservation.guests} personas`}
                   </Text>
                   <Text style={styles.resTable}>{nextReservation.table}</Text>
                 </View>
@@ -184,7 +184,7 @@ export default function HomeScreen({ navigation }) {
                   <Text style={styles.popularName} numberOfLines={1}>{item.name}</Text>
                   <Text style={styles.popularDesc} numberOfLines={2}>{item.description}</Text>
                   <View style={styles.popularFooter}>
-                    <Text style={styles.popularPrice}>${item.price.toFixed(2)}</Text>
+                    <Text style={styles.popularPrice}>{`$${item.price.toFixed(2)}`}</Text>
                     <View style={styles.popularAddBtn}>
                       <Ionicons name="arrow-forward" size={14} color={COLORS.background} />
                     </View>
