@@ -12,9 +12,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../theme/colors';
-import { cartStore } from '../data/cartStore';
+import { cartStore, historyStore } from '../data/cartStore';
 
-export default function OrdersScreen() {
+export default function OrdersScreen({ navigation }) {
   const [cart, setCart] = useState(cartStore.getCart());
   const [discountCode, setDiscountCode] = useState('WELCOME50');
 
@@ -57,13 +57,48 @@ export default function OrdersScreen() {
   };
 
   const handleConfirmOrder = () => {
+    // Construct the real order items array
+    const finalItems = cart.map(item => ({
+      name: item.name,
+      qty: item.qty,
+      price: item.price,
+    }));
+    
+    // Add discount item if present
+    if (discountVal > 0) {
+      finalItems.push({
+        name: 'Descuento Promoción',
+        qty: 1,
+        price: -discountVal
+      });
+    }
+
+    const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newOrder = {
+      id: orderId,
+      status: 'En Cocina',
+      date: `Hoy, ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+      total: total,
+      items: finalItems,
+    };
+
     Alert.alert(
       '🎉 ¡Pedido Confirmado!',
-      'Tu orden ha sido enviada directamente a nuestra cocina.\n\nTiempo estimado de entrega: 30 - 40 minutos.\n\n¡Gracias por elegir Aura Gourmet!',
+      `Tu orden ${orderId} ha sido enviada a cocina.\n\nTiempo estimado: 30 - 40 minutos.\n\n¡Tu pedido ha sido registrado en el historial!`,
       [
         {
-          text: 'Entendido',
+          text: 'Ver Historial',
           onPress: () => {
+            historyStore.addOrder(newOrder);
+            cartStore.clearCart();
+            navigation.navigate('Historial');
+          }
+        },
+        {
+          text: 'Entendido',
+          style: 'cancel',
+          onPress: () => {
+            historyStore.addOrder(newOrder);
             cartStore.clearCart();
           }
         }
@@ -76,7 +111,8 @@ export default function OrdersScreen() {
   };
 
   const subtotal = calculateSubtotal();
-  const total = Math.max(0, subtotal + deliveryFee - discountVal);
+  const taxes = subtotal * 0.16;
+  const total = Math.max(0, subtotal + deliveryFee + taxes - discountVal);
 
   const renderCartItem = ({ item }) => {
     return (
@@ -163,6 +199,10 @@ export default function OrdersScreen() {
               <Text style={styles.summaryValue}>${subtotal.toFixed(2)}</Text>
             </View>
             <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Impuestos (IVA 16%)</Text>
+              <Text style={styles.summaryValue}>${taxes.toFixed(2)}</Text>
+            </View>
+            <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Tarifa de Envío</Text>
               <Text style={styles.summaryValue}>${deliveryFee.toFixed(2)}</Text>
             </View>
@@ -197,13 +237,7 @@ export default function OrdersScreen() {
             <Ionicons name="cart-outline" size={60} color={COLORS.primary} />
           </View>
           <Text style={styles.emptyTitle}>Tu carrito está vacío</Text>
-          <Text style={styles.emptySubtitle}>Agrega platillos exquisitos de nuestro menú y pégalos aquí.</Text>
-          <TouchableOpacity
-            style={styles.fillCartBtn}
-            onPress={handleResetCart}
-          >
-            <Text style={styles.fillCartBtnText}>Simular productos en carrito</Text>
-          </TouchableOpacity>
+          <Text style={styles.emptySubtitle}>Agrega platillos exquisitos de nuestro menú para comenzar tu orden.</Text>
         </View>
       )}
     </SafeAreaView>
@@ -413,17 +447,5 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: SIZES.large,
   },
-  fillCartBtn: {
-    backgroundColor: 'rgba(232, 168, 56, 0.15)',
-    borderRadius: 12,
-    paddingHorizontal: SIZES.medium,
-    paddingVertical: SIZES.medium - 2,
-    borderWidth: 1,
-    borderColor: COLORS.primary,
-  },
-  fillCartBtnText: {
-    color: COLORS.primary,
-    fontWeight: 'bold',
-    fontSize: SIZES.font,
-  },
+
 });

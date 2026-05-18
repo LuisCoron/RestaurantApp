@@ -1,31 +1,27 @@
-import { MOCK_CART } from './mockData';
+import { MOCK_CART, ORDER_HISTORY } from './mockData';
 
-// Shared state for the shopping cart
+// --- SHOPPING CART STATE ---
 let cart = [...MOCK_CART];
-let listeners = [];
+let cartListeners = [];
 
-const notify = () => {
-  listeners.forEach(listener => listener([...cart]));
+const notifyCart = () => {
+  cartListeners.forEach(listener => listener([...cart]));
 };
 
 export const cartStore = {
-  // Get current cart items
   getCart() {
     return [...cart];
   },
 
-  // Add item to cart with specific quantity
   addToCart(item, qty = 1) {
     const existingIndex = cart.findIndex(cartItem => cartItem.id === item.id);
     
     if (existingIndex > -1) {
-      // Create a copy of the item and update its quantity
       cart[existingIndex] = {
         ...cart[existingIndex],
         qty: cart[existingIndex].qty + qty
       };
     } else {
-      // Add new item
       cart.push({
         id: item.id,
         name: item.name || item.nombre,
@@ -36,23 +32,19 @@ export const cartStore = {
         qty: qty
       });
     }
-    
-    notify();
+    notifyCart();
   },
 
-  // Remove item by ID
   removeFromCart(itemId) {
     cart = cart.filter(item => item.id !== itemId);
-    notify();
+    notifyCart();
   },
 
-  // Update item quantity directly by a delta (+1 / -1)
   updateCartQty(itemId, change) {
     const itemIndex = cart.findIndex(item => item.id === itemId);
     if (itemIndex > -1) {
       const newQty = cart[itemIndex].qty + change;
       if (newQty <= 0) {
-        // If quantity becomes 0 or less, remove item
         cart = cart.filter(item => item.id !== itemId);
       } else {
         cart[itemIndex] = {
@@ -60,33 +52,59 @@ export const cartStore = {
           qty: newQty
         };
       }
-      notify();
+      notifyCart();
     }
   },
 
-  // Clear all items
   clearCart() {
     cart = [];
-    notify();
+    notifyCart();
   },
 
-  // Reset to initial mockup items (for prototype demo reset)
   resetToMock() {
     cart = [...MOCK_CART];
-    notify();
+    notifyCart();
   },
 
-  // Subscribe to cart changes
   subscribe(listener) {
-    listeners.push(listener);
-    // Return unsubscribe function for convenience
+    cartListeners.push(listener);
     return () => {
-      listeners = listeners.filter(l => l !== listener);
+      cartListeners = cartListeners.filter(l => l !== listener);
     };
   },
 
-  // Unsubscribe listener manually
   unsubscribe(listener) {
-    listeners = listeners.filter(l => l !== listener);
+    cartListeners = cartListeners.filter(l => l !== listener);
+  }
+};
+
+// --- ORDER HISTORY STATE ---
+let history = [...ORDER_HISTORY];
+let historyListeners = [];
+
+const notifyHistory = () => {
+  historyListeners.forEach(listener => listener([...history]));
+};
+
+export const historyStore = {
+  getHistory() {
+    return [...history];
+  },
+
+  addOrder(order) {
+    // Add new order at the beginning of the list
+    history.unshift(order);
+    notifyHistory();
+  },
+
+  subscribe(listener) {
+    historyListeners.push(listener);
+    return () => {
+      historyListeners = historyListeners.filter(l => l !== listener);
+    };
+  },
+
+  unsubscribe(listener) {
+    historyListeners = historyListeners.filter(l => l !== listener);
   }
 };

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../theme/colors';
+import { cartStore } from '../data/cartStore';
 
 export default function HistoryDetailScreen({ route, navigation }) {
   const { order } = route.params;
@@ -24,9 +25,21 @@ export default function HistoryDetailScreen({ route, navigation }) {
         {
           text: 'Sí, agregar',
           onPress: () => {
+            order.items.forEach(item => {
+              if (item.price > 0) {
+                const matchedItem = {
+                  id: item.id || `reorder_${item.name.replace(/\s+/g, '_').toLowerCase()}`,
+                  name: item.name,
+                  price: item.price,
+                  emoji: '🍽️',
+                  description: 'Reordenado desde historial',
+                };
+                cartStore.addToCart(matchedItem, item.qty || 1);
+              }
+            });
             Alert.alert(
               '🛒 Carrito Actualizado',
-              'Los productos han sido cargados de forma simulada en tu carrito. Puedes revisarlos en la sección "Pedidos".',
+              'Los productos han sido cargados de forma real en tu carrito de compras.',
               [{ text: 'Ver Carrito', onPress: () => navigation.navigate('Pedidos') }]
             );
           }

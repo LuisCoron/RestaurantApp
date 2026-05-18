@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,9 +10,21 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../theme/colors';
-import { ORDER_HISTORY } from '../data/mockData';
+import { historyStore } from '../data/cartStore';
 
 export default function HistoryScreen({ navigation }) {
+  const [history, setHistory] = useState(historyStore.getHistory());
+
+  // Subscribe to historyStore updates
+  useEffect(() => {
+    const unsubscribe = historyStore.subscribe((newHistory) => {
+      setHistory(newHistory);
+    });
+    // Sync initial state
+    setHistory(historyStore.getHistory());
+    return unsubscribe;
+  }, []);
+
   const renderHistoryItem = ({ item }) => {
     const itemCount = item.items.reduce((sum, i) => sum + (i.qty || 1), 0);
     
@@ -65,7 +77,7 @@ export default function HistoryScreen({ navigation }) {
       </View>
 
       <FlatList
-        data={ORDER_HISTORY}
+        data={history}
         renderItem={renderHistoryItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
