@@ -14,6 +14,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../theme/colors';
 import { AI_QUESTIONNAIRE, MENU_ITEMS } from '../data/mockData';
+import { cartStore } from '../data/cartStore';
 
 const { width } = Dimensions.get('window');
 
@@ -100,10 +101,11 @@ export default function AIRecommendationScreen({ navigation }) {
     setCurrentStep(0);
   };
 
-  const handleAddToCart = (itemName) => {
+  const handleAddToCart = (dish) => {
+    cartStore.addToCart(dish, 1);
     Alert.alert(
       '✨ Agregado por la IA',
-      `¡"${itemName}" ha sido añadido a tu carrito directamente desde las recomendaciones!`,
+      `¡"${dish.name}" ha sido añadido a tu carrito directamente desde las recomendaciones!`,
       [
         { text: 'Genial', style: 'default' },
         { text: 'Ir al Carrito', onPress: () => navigation.navigate('Pedidos') }
@@ -282,7 +284,7 @@ export default function AIRecommendationScreen({ navigation }) {
             {/* Action Buttons */}
             <TouchableOpacity
               style={styles.orderDishBtn}
-              onPress={() => handleAddToCart(recommendedDish.name)}
+              onPress={() => handleAddToCart(recommendedDish)}
               activeOpacity={0.9}
             >
               <Ionicons name="cart" size={20} color={COLORS.background} style={{ marginRight: 6 }} />

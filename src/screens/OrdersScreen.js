@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,11 +12,21 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../theme/colors';
-import { MOCK_CART } from '../data/mockData';
+import { cartStore } from '../data/cartStore';
 
 export default function OrdersScreen() {
-  const [cart, setCart] = useState(MOCK_CART);
+  const [cart, setCart] = useState(cartStore.getCart());
   const [discountCode, setDiscountCode] = useState('WELCOME50');
+
+  // Subscribe to cartStore updates
+  useEffect(() => {
+    const unsubscribe = cartStore.subscribe((newCart) => {
+      setCart(newCart);
+    });
+    // Sync initial state in case it changed between mounts
+    setCart(cartStore.getCart());
+    return unsubscribe;
+  }, []);
 
   const deliveryFee = 45;
   const discountVal = discountCode ? 50 : 0;
@@ -26,14 +36,7 @@ export default function OrdersScreen() {
   };
 
   const handleQtyChange = (itemId, change) => {
-    const updatedCart = cart.map(item => {
-      if (item.id === itemId) {
-        const newQty = item.qty + change;
-        return newQty > 0 ? { ...item, qty: newQty } : item;
-      }
-      return item;
-    });
-    setCart(updatedCart);
+    cartStore.updateCartQty(itemId, change);
   };
 
   const handleRemoveItem = (itemId, itemName) => {
@@ -46,7 +49,7 @@ export default function OrdersScreen() {
           text: 'Sí, quitar',
           style: 'destructive',
           onPress: () => {
-            setCart(cart.filter(item => item.id !== itemId));
+            cartStore.removeFromCart(itemId);
           }
         }
       ]
@@ -61,8 +64,7 @@ export default function OrdersScreen() {
         {
           text: 'Entendido',
           onPress: () => {
-            // Reset cart visually to empty or simulated new state
-            setCart([]);
+            cartStore.clearCart();
           }
         }
       ]
@@ -70,7 +72,7 @@ export default function OrdersScreen() {
   };
 
   const handleResetCart = () => {
-    setCart(MOCK_CART);
+    cartStore.resetToMock();
   };
 
   const subtotal = calculateSubtotal();
