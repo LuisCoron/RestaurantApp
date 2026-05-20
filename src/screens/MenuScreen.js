@@ -18,167 +18,21 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../theme/colors';
 import { CATEGORIES } from '../data/mockData';
 import { cartStore } from '../data/cartStore';
+import { menuStore } from '../data/menuStore';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-// Enriched menu items with premium Unsplash images and availability booleans
-const INITIAL_PRODUCTS = [
-  {
-    id: 'ent_1',
-    category: 'entradas',
-    name: 'Bruschetta de Pomodoro',
-    price: 120,
-    emoji: '🥖',
-    description: 'Pan artesanal tostado con tomate fresco, albahaca orgánica, ajo y un toque de aceite de oliva extra virgen.',
-    image: 'https://images.unsplash.com/photo-1572656631137-7935297eff55?w=600',
-    available: true,
-  },
-  {
-    id: 'ent_2',
-    category: 'entradas',
-    name: 'Calamari Fritti',
-    price: 180,
-    emoji: '🦑',
-    description: 'Anillos de calamar crujientes acompañados de una salsa tártara casera y rodajas de limón fresco.',
-    image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=600',
-    available: false, // Marked as sold-out to demonstrate sold-out UI
-  },
-  {
-    id: 'ent_3',
-    category: 'entradas',
-    name: 'Tabla de Quesos y Carnes',
-    price: 260,
-    emoji: '🧀',
-    description: 'Selección premium de quesos maduros y embutidos finos acompañados de frutos secos y miel silvestre.',
-    image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600',
-    available: true,
-  },
-  {
-    id: 'ent_4',
-    category: 'entradas',
-    name: 'Empanadas Argentinas',
-    price: 110,
-    emoji: '🥟',
-    description: 'Dos empanadas horneadas rellenas de carne cortada a cuchillo, sazonadas con comino y aceitunas.',
-    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600',
-    available: true,
-  },
-  {
-    id: 'fuerte_1',
-    category: 'fuertes',
-    name: 'Ribeye Prime a la Parilla',
-    price: 490,
-    emoji: '🥩',
-    description: 'Corte jugoso de 400g a las brasas, servido con papas rústicas al romero y mantequilla de chimichurri.',
-    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600',
-    available: true,
-  },
-  {
-    id: 'fuerte_2',
-    category: 'fuertes',
-    name: 'Salmon Glaseado con Teriyaki',
-    price: 380,
-    emoji: '🐟',
-    description: 'Filete de salmón fresco a la plancha con salsa teriyaki dulce, servido sobre una cama de arroz jazmín.',
-    image: 'https://images.unsplash.com/photo-1485921325814-a50431496cc9?w=600',
-    available: true,
-  },
-  {
-    id: 'fuerte_3',
-    category: 'fuertes',
-    name: 'Ravioles de Espinaca y Ricotta',
-    price: 290,
-    emoji: '🍝',
-    description: 'Pasta artesanal rellena de espinacas tiernas y queso ricotta, bañada en una cremosa salsa de trufa blanca.',
-    image: 'https://images.unsplash.com/photo-1587314168485-3236d6710814?w=600',
-    available: true,
-  },
-  {
-    id: 'fuerte_4',
-    category: 'fuertes',
-    name: 'Hamburguesa Royal Gourmet',
-    price: 240,
-    emoji: '🍔',
-    description: 'Carne de res angus, queso cheddar fundido, tocino crujiente, cebolla caramelizada en pan brioche.',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600',
-    available: true,
-  },
-  {
-    id: 'beb_1',
-    category: 'bebidas',
-    name: 'Maracuyá Mojito Premium',
-    price: 110,
-    emoji: '🍹',
-    description: 'Ron blanco, pulpa de maracuyá fresca, hojas de menta maceradas, limón y un toque de soda.',
-    image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600',
-    available: true,
-  },
-  {
-    id: 'beb_2',
-    category: 'bebidas',
-    name: 'Vino Tinto Copa (Reserva)',
-    price: 140,
-    emoji: '🍷',
-    description: 'Copa de Cabernet Sauvignon con notas de frutos rojos, roble y un final aterciopelado elegante.',
-    image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600',
-    available: true,
-  },
-  {
-    id: 'beb_3',
-    category: 'bebidas',
-    name: 'Limonada de Lavanda y Menta',
-    price: 75,
-    emoji: '🍋',
-    description: 'Refrescante limonada natural infusionada con flores de lavanda orgánica y hojas de menta.',
-    image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600',
-    available: true,
-  },
-  {
-    id: 'beb_4',
-    category: 'bebidas',
-    name: 'Café Espresso Doble',
-    price: 60,
-    emoji: '☕',
-    description: 'Extracción concentrada de granos de café seleccionados de altura con un aroma intenso.',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600',
-    available: true,
-  },
-  {
-    id: 'pos_1',
-    category: 'postres',
-    name: 'Volcán de Chocolate Fondant',
-    price: 130,
-    emoji: '🌋',
-    description: 'Bizcocho tibio de chocolate amargo con centro líquido fundido, acompañado de helado de vainilla.',
-    image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600',
-    available: true,
-  },
-  {
-    id: 'pos_2',
-    category: 'postres',
-    name: 'Tiramisú de la Casa',
-    price: 120,
-    emoji: '🍰',
-    description: 'Capas de bizcocho soletilla remojadas en café espresso, licor de amaretto y crema mascarpone.',
-    image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600',
-    available: true,
-  },
-  {
-    id: 'pos_3',
-    category: 'postres',
-    name: 'Cheesecake de Frutos Rojos',
-    price: 115,
-    emoji: '🍓',
-    description: 'Clásico pay de queso cremoso al estilo Nueva York, bañado en una compota casera de frutos del bosque.',
-    image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=600',
-    available: false, // Marked as sold-out to demonstrate sold-out UI
-  },
-];
-
 export default function MenuScreen({ route }) {
-  const [products] = useState(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState(menuStore.getMenu());
   const [selectedCategory, setSelectedCategory] = useState('todas');
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const unsubscribe = menuStore.subscribe(setProducts);
+    setProducts(menuStore.getMenu());
+    return () => unsubscribe();
+  }, []);
+
 
   // Detail Modal state
   const [selectedProduct, setSelectedProduct] = useState(null);

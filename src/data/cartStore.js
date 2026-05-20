@@ -97,6 +97,13 @@ export const historyStore = {
     notifyHistory();
   },
 
+  updateOrderStatus(orderId, newStatus) {
+    history = history.map(order => 
+      order.id === orderId ? { ...order, status: newStatus } : order
+    );
+    notifyHistory();
+  },
+
   subscribe(listener) {
     historyListeners.push(listener);
     return () => {

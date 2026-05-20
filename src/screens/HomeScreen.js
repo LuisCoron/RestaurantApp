@@ -13,9 +13,11 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { COLORS, SIZES } from '../theme/colors';
-import { POPULAR_ITEMS, MENU_ITEMS } from '../data/mockData';
+import { POPULAR_ITEMS } from '../data/mockData';
 import { cartStore, historyStore } from '../data/cartStore';
 import { loadReservations } from '../data/reservationsStore';
+import { menuStore } from '../data/menuStore';
+import { authStore } from '../data/authStore';
 
 const { width } = Dimensions.get('window');
 
@@ -48,7 +50,7 @@ function getNextReservation(reservations) {
 }
 
 // Top-selling items by price (simulated ranking)
-const TOP_MENU = POPULAR_ITEMS.slice(0, 3);
+// Moved dynamically inside the component
 
 // ─── COMPONENT ──────────────────────────────────────────────────────────────
 export default function HomeScreen({ navigation }) {
@@ -56,16 +58,20 @@ export default function HomeScreen({ navigation }) {
   const [cart, setCart] = useState(cartStore.getCart());
   const [history, setHistory] = useState(historyStore.getHistory());
   const [reservations, setReservations] = useState([]);
+  const [menu, setMenu] = useState(menuStore.getMenu());
 
-  // ── Subscribe to in-memory stores (cart + history) ──
+  // ── Subscribe to in-memory stores ──
   useEffect(() => {
     const unsubCart = cartStore.subscribe(setCart);
     const unsubHistory = historyStore.subscribe(setHistory);
+    const unsubMenu = menuStore.subscribe(setMenu);
     setCart(cartStore.getCart());
     setHistory(historyStore.getHistory());
+    setMenu(menuStore.getMenu());
     return () => {
       unsubCart();
       unsubHistory();
+      unsubMenu();
     };
   }, []);
 
@@ -84,6 +90,7 @@ export default function HomeScreen({ navigation }) {
   const activeReservationsCount = reservations.filter(
     (r) => r.status === 'activa'
   ).length;
+  const topMenu = menu.slice(0, 3);
 
   // ─────────────────────────────────────────────────────────────────────────
   // RENDER
@@ -101,12 +108,21 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.greeting}>Bienvenido,</Text>
             <Text style={styles.appName}>Aura Gourmet ✨</Text>
           </View>
-          <TouchableOpacity style={styles.avatarButton}>
-            <Ionicons name="notifications-outline" size={24} color={COLORS.primary} />
-            {(cartItemCount > 0 || activeReservationsCount > 0) && (
-              <View style={styles.badge} />
-            )}
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity style={styles.avatarButton}>
+              <Ionicons name="notifications-outline" size={24} color={COLORS.primary} />
+              {(cartItemCount > 0 || activeReservationsCount > 0) && (
+                <View style={styles.badge} />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.avatarButton, { marginLeft: 10 }]}
+              onPress={() => authStore.logout()}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="log-out-outline" size={22} color={COLORS.error} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* ── AI Banner ── */}
@@ -157,8 +173,8 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             {/* Content: top 3 platillos */}
-            <Text style={styles.cardSubLabel}>🏆 Más vendidos</Text>
-            {TOP_MENU.map((item, idx) => (
+            <Text style={styles.cardSubLabel}>🏆 Destacados</Text>
+            {topMenu.map((item, idx) => (
               <View key={item.id} style={styles.menuRow}>
                 <Text style={styles.menuRank}>{idx + 1}</Text>
                 <Text style={styles.menuEmoji}>{item.emoji}</Text>
@@ -169,7 +185,7 @@ export default function HomeScreen({ navigation }) {
 
             {/* Footer */}
             <View style={styles.cardFooter}>
-              <Text style={styles.cardFooterText}>{MENU_ITEMS.length} platillos</Text>
+              <Text style={styles.cardFooterText}>{menu.length} platillos</Text>
             </View>
           </TouchableOpacity>
 

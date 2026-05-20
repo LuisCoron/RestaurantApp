@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../theme/colors';
-import { MENU_ITEMS } from '../data/mockData';
+import { menuStore } from '../data/menuStore';
 import { cartStore } from '../data/cartStore';
 
 const { width } = Dimensions.get('window');
@@ -132,6 +132,7 @@ export default function AIRecommendationScreen({ navigation }) {
   // ── AI Recommendation Local Engine ──
   
   const generateRecommendation = (currentAnswers) => {
+    const MENU_ITEMS = menuStore.getMenu();
     setTimeout(() => {
       let candidates = [...MENU_ITEMS];
       const activeRestrictions = currentAnswers.dietaryRestrictions.filter(r => r !== 'ninguna');
