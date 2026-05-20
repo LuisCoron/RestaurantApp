@@ -15,6 +15,9 @@ export const MENU_ITEMS = [
     price: 120,
     emoji: '🥖',
     description: 'Pan artesanal tostado con tomate fresco, albahaca orgánica, ajo y un toque de aceite de oliva extra virgen.',
+    prepTime: 10,
+    tags: ['italiana', 'saludable'],
+    restrictions: ['vegetariano', 'sin lactosa'],
   },
   {
     id: 'ent_2',
@@ -23,6 +26,9 @@ export const MENU_ITEMS = [
     price: 180,
     emoji: '🦑',
     description: 'Anillos de calamar crujientes acompañados de una salsa tártara casera y rodajas de limón fresco.',
+    prepTime: 15,
+    tags: ['mariscos', 'crujiente'],
+    restrictions: [],
   },
   {
     id: 'ent_3',
@@ -31,6 +37,9 @@ export const MENU_ITEMS = [
     price: 260,
     emoji: '🧀',
     description: 'Selección premium de quesos maduros y embutidos finos acompañados de frutos secos y miel silvestre.',
+    prepTime: 12,
+    tags: ['carnes', 'queso'],
+    restrictions: ['sin gluten'],
   },
   {
     id: 'ent_4',
@@ -38,17 +47,23 @@ export const MENU_ITEMS = [
     name: 'Empanadas Argentinas',
     price: 110,
     emoji: '🥟',
-    description: 'Dos empanadas horneadas rellenas de carne cortada a cuchillo, sazonadas con comino y aceitunas.',
+    description: 'Dos empanadas horneadas rellenas de carne cortada a cuchillo, sazonadas con comino y aceitunas, servidas con salsa picante.',
+    prepTime: 12,
+    tags: ['carnes', 'picante'],
+    restrictions: [],
   },
 
   // Platillos Fuertes
   {
     id: 'fuerte_1',
     category: 'fuertes',
-    name: 'Ribeye Prime a la Parilla',
+    name: 'Ribeye Prime a la Parrilla',
     price: 490,
     emoji: '🥩',
-    description: 'Corte jugoso de 400g a las brasas, servido con papas rústicas al romero y mantequilla de chimichurri.',
+    description: 'Corte jugoso de 400g a las brasas, servido con papas rústicas al romero, chimichurri picante y mantequilla aromática.',
+    prepTime: 25,
+    tags: ['carnes', 'picante'],
+    restrictions: ['sin gluten'],
   },
   {
     id: 'fuerte_2',
@@ -57,6 +72,9 @@ export const MENU_ITEMS = [
     price: 380,
     emoji: '🐟',
     description: 'Filete de salmón fresco a la plancha con salsa teriyaki dulce, servido sobre una cama de arroz jazmín.',
+    prepTime: 20,
+    tags: ['mariscos', 'saludable'],
+    restrictions: ['sin lactosa'],
   },
   {
     id: 'fuerte_3',
@@ -65,6 +83,9 @@ export const MENU_ITEMS = [
     price: 290,
     emoji: '🍝',
     description: 'Pasta artesanal rellena de espinacas tiernas y queso ricotta, bañada en una cremosa salsa de trufa blanca.',
+    prepTime: 18,
+    tags: ['italiana', 'vegetariano'],
+    restrictions: ['vegetariano'],
   },
   {
     id: 'fuerte_4',
@@ -72,7 +93,10 @@ export const MENU_ITEMS = [
     name: 'Hamburguesa Royal Gourmet',
     price: 240,
     emoji: '🍔',
-    description: 'Carne de res angus, queso cheddar fundido, tocino crujiente, cebolla caramelizada en pan brioche.',
+    description: 'Carne de res angus, queso cheddar fundido, tocino crujiente, cebolla caramelizada en pan brioche sin gluten opcional.',
+    prepTime: 15,
+    tags: ['carnes', 'casual'],
+    restrictions: [],
   },
 
   // Bebidas
@@ -83,6 +107,9 @@ export const MENU_ITEMS = [
     price: 110,
     emoji: '🍹',
     description: 'Ron blanco, pulpa de maracuyá fresca, hojas de menta maceradas, limón y un toque de soda.',
+    prepTime: 5,
+    tags: ['refrescante', 'dulce'],
+    restrictions: ['vegetariano', 'sin gluten', 'sin lactosa'],
   },
   {
     id: 'beb_2',
@@ -91,6 +118,9 @@ export const MENU_ITEMS = [
     price: 140,
     emoji: '🍷',
     description: 'Copa de Cabernet Sauvignon con notas de frutos rojos, roble y un final aterciopelado elegante.',
+    prepTime: 3,
+    tags: ['elegante'],
+    restrictions: ['vegetariano', 'sin gluten', 'sin lactosa'],
   },
   {
     id: 'beb_3',
@@ -99,6 +129,9 @@ export const MENU_ITEMS = [
     price: 75,
     emoji: '🍋',
     description: 'Refrescante limonada natural infusionada con flores de lavanda orgánica y hojas de menta.',
+    prepTime: 5,
+    tags: ['refrescante', 'saludable'],
+    restrictions: ['vegetariano', 'sin gluten', 'sin lactosa'],
   },
   {
     id: 'beb_4',
@@ -107,6 +140,9 @@ export const MENU_ITEMS = [
     price: 60,
     emoji: '☕',
     description: 'Extracción concentrada de granos de café seleccionados de altura con un aroma intenso.',
+    prepTime: 4,
+    tags: ['saludable'],
+    restrictions: ['vegetariano', 'sin gluten', 'sin lactosa'],
   },
 
   // Postres
@@ -117,6 +153,9 @@ export const MENU_ITEMS = [
     price: 130,
     emoji: '🌋',
     description: 'Bizcocho tibio de chocolate amargo con centro líquido fundido, acompañado de helado de vainilla.',
+    prepTime: 15,
+    tags: ['dulce', 'postres'],
+    restrictions: ['vegetariano'],
   },
   {
     id: 'pos_2',
@@ -125,6 +164,9 @@ export const MENU_ITEMS = [
     price: 120,
     emoji: '🍰',
     description: 'Capas de bizcocho soletilla remojadas en café espresso, licor de amaretto y crema mascarpone.',
+    prepTime: 8,
+    tags: ['dulce', 'italiana', 'postres'],
+    restrictions: ['vegetariano'],
   },
   {
     id: 'pos_3',
@@ -133,6 +175,9 @@ export const MENU_ITEMS = [
     price: 115,
     emoji: '🍓',
     description: 'Clásico pay de queso cremoso al estilo Nueva York, bañado en una compota casera de frutos del bosque.',
+    prepTime: 8,
+    tags: ['dulce', 'postres'],
+    restrictions: ['vegetariano'],
   },
 ];
 
