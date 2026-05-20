@@ -42,7 +42,7 @@ export default function App() {
           </Text>
 
           <Text style={styles.subtitle}>
-            Experiencia gastronómica inteligente
+            Tecnología y sabor en un solo lugar 
           </Text>
 
           <ActivityIndicator
